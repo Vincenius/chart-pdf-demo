@@ -1,0 +1,19 @@
+{
+  "name": "chart",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "canvas": "^2.6.1",
+    "co": "^4.6.0",
+    "d3-node": "^2.2.1",
+    "node-chartist": "^1.0.5",
+    "pdfmake": "^0.1.64"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
