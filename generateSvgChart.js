@@ -7,7 +7,7 @@ const defaultMargins = ({ xAxis, yAxis } = {}) => ({
   left: yAxis ? 50 : 40,
 })
 
-function barChart({
+function chart({
   data,
   selector: _selector = '#chart',
   container: _container = `
@@ -23,6 +23,11 @@ function barChart({
   barColor: _barColor = 'steelblue',
   barHoverColor: _barHoverColor = 'brown',
   labels: _labels = { xAxis: '', yAxis: '' },
+
+  lineColor: _lineColor = 'red',
+  lineColors: _lineColors = ['red'],
+  tickSize: _tickSize = 5,
+  tickPadding: _tickPadding = 5,
 } = {}) {
   const _svgStyles = `
     .bar { fill: ${_barColor}; }
@@ -42,11 +47,11 @@ function barChart({
 
   // set the ranges
   const x = d3.scaleBand()
-          .range([0, width])
-          .padding(0.1);
+    .range([0, width])
+    .padding(0.1);
 
   const y = d3.scaleLinear()
-          .range([height, 0]);
+    .range([height, 0]);
 
   const svg = d3n.createSVG(_width, _height)
     .append('g')
@@ -57,13 +62,27 @@ function barChart({
 
   // append the rectangles for the bar chart
   svg.selectAll('.bar')
-      .data(data)
-      .enter().append('rect')
-      .attr('class', 'bar')
-      .attr('x', (d) => x(d.key))
-      .attr('width', x.bandwidth())
-      .attr('y', (d) => y(d.value))
-      .attr('height', (d) => height - y(d.value));
+    .data(data)
+    .enter().append('rect')
+    .attr('class', 'bar')
+    .attr('x', (d) => x(d.key))
+    .attr('width', x.bandwidth())
+    .attr('y', (d) => y(d.value))
+    .attr('height', (d) => height - y(d.value));
+
+
+      /* g.append('g')
+    .attr('transform', `translate(0, ${height})`)
+    .call(xAxis);
+
+  g.append('g').call(yAxis); */
+
+  /* const xAxis = d3.axisBottom(xScale)
+    .tickSize(_tickSize)
+    .tickPadding(_tickPadding);
+  const yAxis = d3.axisLeft(yScale)
+    .tickSize(_tickSize)
+    .tickPadding(_tickPadding); */
 
   // add the x Axis
   svg.append('g')
@@ -88,7 +107,35 @@ function barChart({
     .style('text-anchor', 'middle')
     .text(_labels.yAxis);
 
+
+  // TODO HERE LINECHART
+  // https://github.com/d3-node/d3node-linechart
+
+  const g = svg.append('g')
+  const xScale = d3.scaleLinear()
+      .domain(d3.extent(data, d => d.key))
+      .rangeRound([0, width]);
+  const yScale = d3.scaleLinear()
+      .domain(d3.extent(data, d => d.value))
+      .rangeRound([height, 0]);
+
+  const lineChart = d3.line()
+    .x(d => xScale(d.key))
+    .y(d => yScale(d.value));
+
+  // TODO optinal?
+  lineChart.curve(d3.curveBasis);
+
+  g.append('g')
+    .attr('fill', 'none')
+    .attr('stroke-width', 1.5)
+    .selectAll('path')
+    .data([data])
+    .enter().append("path")
+    .attr('stroke', (d, i) => i < _lineColors.length ? _lineColors[i] : _lineColor)
+    .attr('d', lineChart);
+
   return d3n;
 }
 
-module.exports = barChart
+module.exports = chart

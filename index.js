@@ -16,18 +16,25 @@ const testChart = barChart({
   width,
   height,
   data: [{
-    key: 'test',
+    key: 1,
     value: 12,
   }, {
-    key: 'sd',
+    key: 2,
     value: 15,
+  }, {
+    key: 3,
+    value: 5,
   }]
 })
 
-var find = 'currentColor';
-var re = new RegExp(find, 'g');
+const find = 'currentColor'
+const re = new RegExp(find, 'g')
 
-const svgString = testChart.svgString().replace(re, 'black');
+const svgString = testChart
+  .svgString()
+  .replace(re, 'black'); // or maybe more like gray?
+
+console.log(svgString)
 
 // GENERATE PDF
 const docDefinition = {
