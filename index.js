@@ -31,6 +31,7 @@ const testChartSvg = generateChartSvgString({
   data: demoData,
   lineColor: '#00b894',
   barColor: '#74b9ff',
+  useCurve: true,
 })
 
 // GENERATE PDF
